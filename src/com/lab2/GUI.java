@@ -81,7 +81,6 @@ public class GUI extends JFrame {
 
         getContentPane().add(grid);
         setResizable(false);
-        // Открываем окно
         setVisible(true);
     }
 
@@ -195,8 +194,8 @@ public class GUI extends JFrame {
         void setBee(){
             int start_coords_x = bee.getX();
             int start_coords_y = bee.getY();
-            double speed_x = ((hive.getX()+hive.getWidth()/2) - bee.getX())/5;
-            double speed_y = ((hive.getY()+hive.getHeight()/2) - bee.getY())/5;
+            double speed_x = ((hive.getX()+hive.getWidth()/2) - bee.getX())/6;
+            double speed_y = ((hive.getY()+hive.getHeight()/2) - bee.getY())/6;
             if (hive.getX() < bee.getX()){
                 bee_textures = textures_right;
                 bee.setIcon(new ImageIcon(bee_textures.bee));
@@ -208,7 +207,7 @@ public class GUI extends JFrame {
             bee.setLocation(hive.getX() + hive.getWidth()/2, hive.getY()+hive.getHeight()/2);
             bee.setIcon(new ImageIcon(bee_textures.bee_50opacity));
             bee.setVisible(true);
-            bee.setLocation((int)(bee.getX() - (speed_x/10)*5), (int)(bee.getY() - (speed_y/10)*5));
+            bee.setLocation((int)(bee.getX() - (speed_x/13)*5), (int)(bee.getY() - (speed_y/13)*5));
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -216,7 +215,7 @@ public class GUI extends JFrame {
             }
             bee.setIcon(new ImageIcon(bee_textures.bee));
             while (true) {
-                bee.setLocation((int)(bee.getX() - speed_x/12), (int)(bee.getY() - speed_y/12));
+                bee.setLocation((int)(bee.getX() - speed_x/13), (int)(bee.getY() - speed_y/13));
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {
