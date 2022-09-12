@@ -267,12 +267,12 @@ public class GUI extends JFrame {
         public void run() {
             while (mutex.isMuted()) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            if (!mutex.isMuted()){
+            if (!mutex.isMuted()&&!dead_bear){
             mutex.mute();
             int speed = 5;
             int delay = 7;
