@@ -19,8 +19,21 @@ public class GUI extends JFrame {
     int y_size = 3;
     int width = 380*x_size;
     int height = 380*y_size;
-
+    Mutex mutex = new Mutex();
     boolean dead_bear = false;
+
+    public class Mutex {
+        private boolean flag = false;
+        public void mute() {
+            flag = true;
+        }
+        public void unmute() {
+            flag = false;
+        }
+        public boolean isMuted() {
+            return flag;
+        }
+    }
 
     public GUI() {
         super("GridLayoutTest");
@@ -34,7 +47,6 @@ public class GUI extends JFrame {
         for (int i = 0; i < y_size; i++) {
             for (int j = 0; j < x_size; j++) {
                 MyThreadArray.add(new BeeThread(j, i));
-                MyThreadArray.get(MyThreadArray.size()-1).start();
             }
         }
 
@@ -59,6 +71,11 @@ public class GUI extends JFrame {
                 grid.add(BackArray.get(BackArray.size()-1));
                 BackArray.get(BackArray.size()-1).setBounds(j*380, i*380, 380, 380);
             }
+        }
+
+
+        for (BeeThread thread: MyThreadArray) {
+                thread.start();
         }
 
 
@@ -87,7 +104,7 @@ public class GUI extends JFrame {
         }
         public void run() {
             while (!dead_bear) {
-                bear.setLocation(bear.getX() + speed_x, bear.getY() + speed_y);
+                //bear.setLocation(bear.getX() + speed_x, bear.getY() + speed_y);
                 if (bear.getX() + bear.getWidth()+2 >= width || bear.getX()-2 <= 0) {
                     speed_x = -speed_x;
                 }
@@ -145,6 +162,7 @@ public class GUI extends JFrame {
         }
 
         public BeeThread(int x, int y){
+
             coords = new Coords(x, y);
             bee = new JLabel();
             textures_left = new Textures("left");
@@ -154,6 +172,7 @@ public class GUI extends JFrame {
             grid.add(bee);
             bee.setBounds(5+coords.x, 5+coords.y, 48, 45);
 
+            bee.setVisible(false);
         }
 
         boolean killTheBear(){
@@ -188,6 +207,7 @@ public class GUI extends JFrame {
             }
             bee.setLocation(hive.getX() + hive.getWidth()/2, hive.getY()+hive.getHeight()/2);
             bee.setIcon(new ImageIcon(bee_textures.bee_50opacity));
+            bee.setVisible(true);
             bee.setLocation((int)(bee.getX() - (speed_x/10)*5), (int)(bee.getY() - (speed_y/10)*5));
             try {
                 Thread.sleep(100);
@@ -245,8 +265,17 @@ public class GUI extends JFrame {
         }
 
         public void run() {
+            while (mutex.isMuted()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (!mutex.isMuted()){
+            mutex.mute();
             int speed = 5;
-            int delay = 10;
+            int delay = 7;
             try {
             Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -295,8 +324,9 @@ public class GUI extends JFrame {
                     e.printStackTrace();
                 }
             }
+            mutex.unmute();
             returnBee();
-
+            }
         }
     }
 }
