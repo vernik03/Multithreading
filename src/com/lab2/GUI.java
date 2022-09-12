@@ -40,7 +40,7 @@ public class GUI extends JFrame {
 
         bear = new JLabel(new ImageIcon("src/com/lab2/img/bear.png"));
         grid.add(bear);
-        Random rand = new Random(); //instance of random class
+        Random rand = new Random();
         int upperboundX = width-94;
         int upperboundY = height-89;
         bear.setBounds(rand.nextInt(upperboundX),  rand.nextInt(upperboundY), 94, 89);
@@ -197,12 +197,6 @@ public class GUI extends JFrame {
             bee.setIcon(new ImageIcon(bee_textures.bee));
             while (true) {
                 bee.setLocation((int)(bee.getX() - speed_x/12), (int)(bee.getY() - speed_y/12));
-//                if (bee.getX() + bee.getWidth()+2 >= width || bee.getX()-2 <= 0) {
-//                    speed_x = -speed_x;
-//                }
-//                if (bee.getY() + bee.getHeight()*1.5-2 >= height || bee.getY() <= 0) {
-//                    speed_y = -speed_y;
-//                }
                 try {
                     Thread.sleep(20);
                 } catch (InterruptedException e) {
