@@ -267,7 +267,7 @@ public class GUI extends JFrame {
         public void run() {
             while (mutex.isMuted()) {
                 try {
-                    Thread.sleep(5);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -275,7 +275,7 @@ public class GUI extends JFrame {
             if (!mutex.isMuted()&&!dead_bear){
             mutex.mute();
             int speed = 5;
-            int delay = 7;
+            int delay = 10;
             try {
             Thread.sleep(300);
             } catch (InterruptedException e) {
