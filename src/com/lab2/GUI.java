@@ -19,8 +19,8 @@ public class GUI extends JFrame {
     int y_size = 3;
     int width = 380*x_size;
     int height = 380*y_size;
-    Mutex mutex = new Mutex();
-    boolean dead_bear = false;
+    volatile Mutex mutex = new Mutex();
+    volatile boolean dead_bear = false;
 
     public class Mutex {
         private boolean flag = false;
