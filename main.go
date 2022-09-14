@@ -2,60 +2,75 @@ package main
 
 import (
 	"math/rand"
+	"sync"
 	"fmt"
 	"time"
 )
 
-func fight(yin *int, yan *int) string {
-    if *yin > *yan {
-		time.Sleep(time.Millisecond * 100)
-		*yin -= *yan
-		*yan = 0
-		fmt.Println("Guan-Yin wins")
-		return "yin"
-	} else {	
-		time.Sleep(time.Millisecond * 100)
-		*yan -= *yin
-		*yin = 0
-		fmt.Println("Guan-Yan wins")
-		return "yan"
+type monk struct {
+    monastery string
+    energy  int
+}
+
+func fight(monk1 *monk, monk2 *monk) int {
+	time.Sleep(time.Millisecond * 100)
+    if monk1.energy > monk2.energy {
+		fmt.Println(monk1.monastery + " wins")
+		return 1
+	} else {
+		fmt.Println(monk2.monastery + " wins")
+		return 2
 	}
 }
 
-func defeat(s []int, i int) []int {
-    s[i] = s[len(s)-1]
-    return s[:len(s)-1]
+func thread (monk1 *monk, monk2 *monk){
+	winner := fight(monk1, monk2)
+	if winner == 1 {
+		monk1.energy = 0
+	} else {
+		monk2.energy = 0
+	}
 }
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	Guan_Yin := []int{}
-	Guan_Yan := []int{}
+	Guan_Yin := []monk{}
+	Guan_Yan := []monk{}
 	for i := 0; i < 10; i++ {
-		Guan_Yin = append(Guan_Yin, rand.Intn(90)+10)
-		Guan_Yan = append(Guan_Yan, rand.Intn(90)+10)
+		Guan_Yin = append(Guan_Yin, monk{"Guan-Yin", rand.Intn(90)+10})
+		Guan_Yan = append(Guan_Yan, monk{"Guan-Yan", rand.Intn(90)+10})
 	}
 
+	fighters := []monk{}
+	for i := 0; i < len(Guan_Yin); i++ {
+		fighters = append(fighters, Guan_Yin[i])
+		fighters = append(fighters, Guan_Yan[i])
+	}
 
-	for len(Guan_Yin) > 0 && len(Guan_Yan) > 0 {
-		for i := 0; i < len(Guan_Yin); i++ {
-			for j := 0; j < len(Guan_Yan); j++ {
-				if fight(&Guan_Yin[i], &Guan_Yan[j]) == "yin" {
-					Guan_Yan = defeat(Guan_Yan, j)
-					if j == len(Guan_Yan) {
-						break
-					}
+	for len(fighters) > 1 {
+		// fmt.Println(fighters)
+		var wg sync.WaitGroup 
+		wg.Add(len(fighters)/2)
+		for i := 0; i < len(fighters)-1; i += 2 {
+			go func(monk1 *monk, monk2 *monk) {
+				defer wg.Done()
+				winner := fight(monk1, monk2)
+				if winner == 1 {
+					monk1.energy = 0
 				} else {
-					Guan_Yin = defeat(Guan_Yin, i)
-					if i == len(Guan_Yin) {
-						break
-					}
+					monk2.energy = 0
 				}
+			  }(&fighters[i], &fighters[i+1])
+		}
+		wg.Wait()
+		temp_fighters := []monk{}
+		for i := 0; i < len(fighters); i++ {
+			if fighters[i].energy > 0 {
+				temp_fighters = append(temp_fighters, fighters[i])
 			}
 		}
+		fighters = temp_fighters
 	}
 
-
-	fmt.Println(Guan_Yin)
-	fmt.Println(Guan_Yan)
+	fmt.Println("Finally, " + fighters[0].monastery + " wins")
 }
